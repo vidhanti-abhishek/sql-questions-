@@ -1,0 +1,154 @@
+day 1
+
+
+## importtant things 
+
+## cte -- common table expression 
+
+use world;
+select* from city;
+select * from country;
+select * from countrylanguage;
+
+
+#common table expression 
+#fetch data of no cities against every country
+#step 1 create aggregation on city table (no of cities against every countrycode)
+#step 2 - joiin this temporary table with country table on fetch of no of cities
+
+ 
+ with c_t_e as
+(select CountryCode , count(name) as no_cities from city
+group by CountryCode) 
+select  name,continent,code ,no_cities 
+from country c
+left join c_t_e
+  ON c.code = c_t_e.CountryCode;
+  
+
+
+-- exxample 2--
+
+with cte as
+(select CountryCode , count(Language) as no_language from countrylanguage 
+group by CountryCode)
+select  name ,continent, Region, no_language from country
+left join cte on
+cte.CountryCode= country.code ;
+
+										-- now i will try to  add this both common expression in one 
+
+
+ WITH city_count AS (
+    SELECT 
+        CountryCode,
+        COUNT(name) AS no_cities
+    FROM city
+    GROUP BY CountryCode
+),
+language_count AS (
+    SELECT 
+        CountryCode,
+        COUNT(Language) AS no_language
+    FROM countrylanguage
+    GROUP BY CountryCode
+)
+SELECT 
+    c.name,
+    c.continent,
+    c.Region,
+    COALESCE(cc.no_cities, 0) AS no_cities,
+    COALESCE(lc.no_language, 0) AS no_language
+FROM country AS c
+LEFT JOIN city_count AS cc
+    ON c.code = cc.CountryCode
+LEFT JOIN language_count AS lc
+    ON c.code = lc.CountryCode;
+    
+    
+    WITH city_count AS (
+    SELECT CountryCode, COUNT(name) AS no_cities
+    FROM city
+    GROUP BY CountryCode
+),
+language_count AS (
+    SELECT CountryCode, COUNT(Language) AS no_language
+    FROM countrylanguage
+    GROUP BY CountryCode
+)
+SELECT 
+    country.name,
+    country.continent,
+    country.Region,
+    city_count.no_cities,
+    language_count.no_language
+FROM country
+LEFT JOIN city_count
+    ON country.code = city_count.CountryCode
+LEFT JOIN language_count
+    ON country.code = language_count.CountryCode;
+    
+  --   __ now  i am using my code and d fix it 
+    
+with c_t_e as
+(select CountryCode , count(name) as no_cities from city
+group by CountryCode),
+cte as (select CountryCode , count(Language) as no_language from countrylanguage 
+group by CountryCode)
+
+select  name,continent,code ,no_cities,no_language
+from country c
+left join c_t_e
+ON c.code = c_t_e.CountryCode
+
+left join cte on
+cte.CountryCode= c.code ;
+
+
+
+
+
+-- Question 1
+-- Find the number of countries in each continent.
+-- Expected output:
+-- Continent     Number_of_countries
+-- Asia          ?
+-- Europe        ?
+-- Africa        ?
+-- ...
+
+select continent, count(name)  no_county from country
+group by Continent;
+
+
+-- CTE Practice — Question 1 ⭐
+-- Using a CTE, find the number of cities in each country.
+-- Expected output:
+-- CountryCode | no_cities
+-- ------------|----------
+-- ABW         | 1
+-- AFG         | ...
+-- AGO         | ...
+-- Tables: country, city
+
+select * from country;
+select * from city;
+
+WITH cte_aggr AS (
+    SELECT 
+        CountryCode,
+        COUNT(name) AS no_city
+    FROM city
+    GROUP BY CountryCode
+)
+SELECT 
+    country.code,
+    cte_aggr.no_city
+FROM country
+LEFT JOIN cte_aggr
+    ON country.code = cte_aggr.CountryCode;
+
+
+
+
+  
