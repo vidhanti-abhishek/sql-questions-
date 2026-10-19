@@ -1,0 +1,100 @@
+## subquery 
+
+use world;
+select * from city;
+select * from country ;
+select * from countrylanguage ;
+
+-- display the details the city pop is grater then avg 
+
+-- single row subquerry  bcz  (select avg(Population)from city); the output is only one 
+
+select  name,Population from city
+where Population > (select avg(Population)from city);
+
+#Q i want all the city form  city table and that all city belongs to the 'aisa '
+
+select * from city ;
+
+select ID,NAME,CountryCode , District,Population from city;
+     #WHERE continetnt = aisa ==-- now i  have to write a subquery
+     
+     
+     
+select ID,NAME,CountryCode , District,Population from city
+where CountryCode = (
+select code from country 
+where continent = "aisa");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#now i am going for the subqury 
+use world;
+ select * from city;
+ select * from country;
+
+#single subquery
+
+select avg(population) from city;
+
+select * from city
+where population >350468;
+
+
+select  *from city
+where (select avg(population) from city);
+
+#both are same code but diffeent is its last one is permaenmet code after many yerar its cants change 
+
+
+#now wew are comming for multiple subquery
+
+#display the data of the all cities which belong to continent aisa
+
+select * from city
+where continent = "asia";
+
+
+select
+ id,name,countrycode ,population from city
+ where countrycode in
+ (select code from country 
+ where continent ="aisa");
+ 
+ select * from country;
+ 
+ -- select name,code from country
+-- where continent ="Asia";
+ 
+ select
+ id,name,countrycode ,population from city
+ where countrycode iN  (select code from country 
+ where Continent = "asia");
+
+-- using where filter and join the concept use  to  wrote a subquery 
+
+SELECT
+    ci.id,
+    ci.name,
+    ci.countrycode,
+    ci.population,
+    (
+        SELECT c1.name
+        FROM country c1
+        WHERE c1.code = ci.countrycode
+    ) AS country_name
+FROM city ci;
